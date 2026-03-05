@@ -1,21 +1,33 @@
 import { Tabs } from "expo-router";
+import { useEffect, useState } from "react";
+import { useTheme } from "@react-navigation/native";
+import { View } from "react-native";
 
 import { HapticTab } from "@/components/haptic-tab";
 import { IconSymbol } from "@/components/ui/icon-symbol";
 import { Colors } from "@/constants/theme";
-import { useColorScheme } from "@/hooks/use-color-scheme";
 
 export default function TabLayout() {
-  const colorScheme = useColorScheme();
+  const [mounted, setMounted] = useState(false);
+
+  useEffect(() => {
+    setMounted(true);
+  }, []);
+
+  const theme = useTheme();
+  const colorScheme = theme.dark ? "dark" : "light";
+  const screenOptions = {
+    tabBarActiveTintColor: Colors[colorScheme].tint,
+    headerShown: false,
+    tabBarButton: HapticTab,
+  };
+
+  if (!mounted) {
+    return <View style={{ flex: 1 }} />;
+  }
 
   return (
-    <Tabs
-      screenOptions={{
-        tabBarActiveTintColor: Colors[colorScheme ?? "light"].tint,
-        headerShown: false,
-        tabBarButton: HapticTab,
-      }}
-    >
+    <Tabs screenOptions={screenOptions}>
       <Tabs.Screen
         name="index"
         options={{
